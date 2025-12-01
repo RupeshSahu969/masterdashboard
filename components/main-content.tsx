@@ -12,6 +12,7 @@ import RepairDashboard from './dashboards/repair-dashboard'
 import SubscriptionDashboard from './dashboards/subscription-dashboard'
 import TravelDashboard from './dashboards/travel-dashboard'
 import MachineMaintenanceDashboard from './dashboards/machine-maintenance-dashboard'
+import LeadToOrderDashboard from './dashboards/lead-to-order-dashboard'
 
 interface MainContentProps {
   activeSystem: string
@@ -44,6 +45,8 @@ export default function MainContent({ activeSystem }: MainContentProps) {
         return <SubscriptionDashboard />
       case 'travel':
         return <TravelDashboard />
+      case 'lead-to-order':
+        return <LeadToOrderDashboard />
       default:
         return <ChecklistDashboard />
     }

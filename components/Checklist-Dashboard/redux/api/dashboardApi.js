@@ -109,7 +109,8 @@ export const getDashboardDataCount = async (dashboardType, staffFilter = null, t
 
     let query = supabase
       .from(dashboardType)
-      .select('*', { count: 'exact', head: true });
+      .select('*', { count: 'exact' })
+      .limit(1);
 
     // Apply role-based filtering
     if (role === 'user' && username) {
@@ -186,7 +187,8 @@ export const countTotalTaskApi = async (dashboardType, staffFilter = null, depar
 
     let query = supabase
       .from(dashboardType)
-      .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
+      .limit(1)
       .lte('task_start_date', `${today}T23:59:59`);
 
     // Apply filters
@@ -227,13 +229,15 @@ export const countCompleteTaskApi = async (dashboardType, staffFilter = null, de
     if (dashboardType === 'delegation') {
       query = supabase
         .from('delegation')
-        .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
+      .limit(1)
         .not('submission_date', 'is', null)
         .lte('task_start_date', `${today}T23:59:59`);
     } else {
       query = supabase
         .from('checklist')
-        .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
+      .limit(1)
         .eq('status', 'Yes')
         .lte('task_start_date', `${today}T23:59:59`);
     }
@@ -276,14 +280,16 @@ export const countPendingOrDelayTaskApi = async (dashboardType, staffFilter = nu
     if (dashboardType === 'delegation') {
       query = supabase
         .from('delegation')
-        .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
+      .limit(1)
         .is('submission_date', null)
         .gte('task_start_date', `${today}T00:00:00`)
         .lte('task_start_date', `${today}T23:59:59`);
     } else {
       query = supabase
         .from('checklist')
-        .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
+      .limit(1)
         .or('status.is.null,status.neq.Yes')
         .gte('task_start_date', `${today}T00:00:00`)
         .lte('task_start_date', `${today}T23:59:59`);
@@ -327,13 +333,15 @@ export const countOverDueORExtendedTaskApi = async (dashboardType, staffFilter =
     if (dashboardType === 'delegation') {
       query = supabase
         .from('delegation')
-        .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
+      .limit(1)
         .is('submission_date', null)
         .lt('task_start_date', `${today}T00:00:00`);
     } else {
       query = supabase
         .from('checklist')
-        .select('*', { count: 'exact', head: true })
+      .select('*', { count: 'exact' })
+      .limit(1)
         .or('status.is.null,status.neq.Yes')
         .is('submission_date', null)
         .lt('task_start_date', `${today}T00:00:00`);
@@ -599,7 +607,7 @@ export const getTotalUsersCountApi = async () => {
   try {
     const { data, error, count } = await supabase
       .from('users')
-      .select('user_name', { count: 'exact', head: true })
+      .select('user_name', { count: 'exact' })
       .not('user_name', 'is', null)
       .not('user_name', 'eq', '');
 
@@ -727,7 +735,7 @@ export const getChecklistDateRangeCountApi = async (
 
     let query = supabase
       .from('checklist')
-      .select('*', { count: 'exact', head: true });
+      .select('id', { count: 'exact' });
 
     // Apply date range filter
     if (startDate && endDate) {

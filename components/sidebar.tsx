@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { Type as type, type LucideIcon, CheckSquare, Calendar, ShoppingCart, FileText, Wrench, Package, Zap, FileStack, BarChart3, CreditCard, Navigation, Menu, X } from 'lucide-react'
+import { Type as type, type LucideIcon, CheckSquare, Calendar, ShoppingCart, FileText, Wrench, Package, Zap, FileStack, BarChart3, CreditCard, Navigation, Menu, X, TrendingUp } from 'lucide-react'
 import { type CSSProperties, useMemo, useState } from 'react'
 
 interface SidebarItem {
@@ -19,6 +19,7 @@ const sidebarItems: SidebarItem[] = [
   { id: 'o2d', label: 'O2D System', icon: Package, gradient: 'gradient-purple' },
   { id: 'repair', label: 'Repair System', icon: Zap, gradient: 'gradient-teal' },
   { id: 'subscription', label: 'Subscriptions', icon: CreditCard, gradient: 'gradient-pink' },
+  { id: 'lead-to-order', label: 'Lead to Order', icon: TrendingUp, gradient: 'gradient-orange' },
 
   // Remaining systems
   { id: 'planning', label: '12 Week Planning', icon: Calendar, gradient: 'gradient-orange' },
