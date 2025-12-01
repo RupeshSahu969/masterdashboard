@@ -50,16 +50,7 @@ export const fetchDashboardMetrics = async (userId, isAdmin) => {
       const errorText = await response.text();
       console.error("Metrics API error response:", errorText);
       
-      // Return fallback data instead of throwing (match provided reference UI)
-      console.log("Using fallback metrics data");
-      return {
-        totalLeads: 2,
-        pendingFollowups: 1,
-        quotationsSent: 14,
-        ordersReceived: 8,
-        totalEnquiry: 2,
-        pendingEnquiry: 0
-      };
+      throw new Error("Metrics API failed");
     }
 
     const data = await response.json();
@@ -70,14 +61,7 @@ export const fetchDashboardMetrics = async (userId, isAdmin) => {
     } else {
       console.log("Metrics API returned error:", data.message);
       // Return fallback data
-      return {
-        totalLeads: 2,
-        pendingFollowups: 1,
-        quotationsSent: 14,
-        ordersReceived: 8,
-        totalEnquiry: 2,
-        pendingEnquiry: 0
-      };
+      throw new Error("Metrics API failed");
     }
   } catch (error) {
     console.error("Error fetching dashboard metrics:", error);
@@ -171,46 +155,10 @@ export const fetchDashboardCharts = async (userId, isAdmin) => {
       return data.data;
     } else {
       console.log("Charts API returned error:", data.message);
-      // Return fallback data
-      return {
-        overview: [
-          { month: "Nov", leads: 2, enquiries: 2, orders: 2 },
-        ],
-        conversion: [
-          { name: "Leads", value: 2, color: "#4f46e5" },
-          { name: "Enquiries", value: 2, color: "#8b5cf6" },
-          { name: "Quotations", value: 14, color: "#d946ef" },
-          { name: "Orders", value: 8, color: "#ec4899" },
-        ],
-        sources: [
-          { name: "Indiamart", value: 1, color: "#06b6d4" },
-          { name: "Justdial", value: 1, color: "#0ea5e9" },
-          { name: "Social Media", value: 0, color: "#3b82f6" },
-          { name: "Website", value: 0, color: "#6366f1" },
-          { name: "Referrals", value: 0, color: "#8b5cf6" },
-        ]
-      };
+      throw new Error("Charts API failed");
     }
   } catch (error) {
     console.error("Error fetching dashboard charts:", error);
-    // Return fallback data instead of throwing
-    return {
-      overview: [
-        { month: "Nov", leads: 2, enquiries: 2, orders: 2 },
-      ],
-      conversion: [
-        { name: "Leads", value: 2, color: "#4f46e5" },
-        { name: "Enquiries", value: 2, color: "#8b5cf6" },
-        { name: "Quotations", value: 14, color: "#d946ef" },
-        { name: "Orders", value: 8, color: "#ec4899" },
-      ],
-      sources: [
-        { name: "Indiamart", value: 1, color: "#06b6d4" },
-        { name: "Justdial", value: 1, color: "#0ea5e9" },
-        { name: "Social Media", value: 0, color: "#3b82f6" },
-        { name: "Website", value: 0, color: "#6366f1" },
-        { name: "Referrals", value: 0, color: "#8b5cf6" },
-      ]
-    };
+    throw error;
   }
 };
