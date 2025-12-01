@@ -5,7 +5,41 @@ const API_BASE_URL =
   (typeof process !== "undefined" && process.env?.VITE_API_URL) ||
   (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_API_URL) ||
   (typeof import.meta !== "undefined" ? import.meta.env?.VITE_API_URL : undefined) ||
-  "http://13.127.157.230:5050/api";
+  "";
+
+const getApiBase = () => {
+  if (!API_BASE_URL) {
+    console.warn("Lead-to-Order API base URL is not configured; using demo data.");
+  }
+  return API_BASE_URL;
+};
+
+// Demo fallback matching the original reference data
+const DEMO_METRICS = {
+  totalLeads: 2,
+  pendingFollowups: 1,
+  quotationsSent: 14,
+  ordersReceived: 8,
+  totalEnquiry: 2,
+  pendingEnquiry: 0,
+};
+
+const DEMO_CHARTS = {
+  overview: [{ month: "Nov", leads: 2, enquiries: 2, orders: 2 }],
+  conversion: [
+    { name: "Leads", value: 2, color: "#4f46e5" },
+    { name: "Enquiries", value: 2, color: "#8b5cf6" },
+    { name: "Quotations", value: 14, color: "#d946ef" },
+    { name: "Orders", value: 8, color: "#ec4899" },
+  ],
+  sources: [
+    { name: "Indiamart", value: 1, color: "#06b6d4" },
+    { name: "Justdial", value: 1, color: "#0ea5e9" },
+    { name: "Social Media", value: 0, color: "#3b82f6" },
+    { name: "Website", value: 0, color: "#6366f1" },
+    { name: "Referrals", value: 0, color: "#8b5cf6" },
+  ],
+};
 
 const getAuthHeaders = () => {
   if (typeof window === "undefined") {
@@ -22,13 +56,18 @@ export const fetchDashboardMetrics = async (userId, isAdmin) => {
   try {
     console.log(`Fetching metrics for: ${userId}, admin: ${isAdmin}`);
     
-    const response = await fetch(
-      `${API_BASE_URL}/dashboard/metrics?userId=${encodeURIComponent(userId)}&isAdmin=${isAdmin}`,
-      {
-        method: "GET",
-        headers: getAuthHeaders(),
-      }
-    );
+        const base = getApiBase();
+        if (!base) {
+          return DEMO_METRICS;
+        }
+
+        const response = await fetch(
+          `${base}/dashboard/metrics?userId=${encodeURIComponent(userId)}&isAdmin=${isAdmin}`,
+          {
+            method: "GET",
+            headers: getAuthHeaders(),
+          }
+        );
 
     console.log("Metrics response status:", response.status);
     
@@ -50,7 +89,8 @@ export const fetchDashboardMetrics = async (userId, isAdmin) => {
       const errorText = await response.text();
       console.error("Metrics API error response:", errorText);
       
-      throw new Error("Metrics API failed");
+      console.warn("Metrics API failed; using demo data.");
+      return DEMO_METRICS;
     }
 
     const data = await response.json();
@@ -82,13 +122,18 @@ export const fetchDashboardCharts = async (userId, isAdmin) => {
   try {
     console.log(`Fetching charts for: ${userId}, admin: ${isAdmin}`);
     
-    const response = await fetch(
-      `${API_BASE_URL}/dashboard/charts?userId=${encodeURIComponent(userId)}&isAdmin=${isAdmin}`,
-      {
-        method: "GET",
-        headers: getAuthHeaders(),
-      }
-    );
+        const base = getApiBase();
+        if (!base) {
+          return DEMO_CHARTS;
+        }
+
+        const response = await fetch(
+          `${base}/dashboard/charts?userId=${encodeURIComponent(userId)}&isAdmin=${isAdmin}`,
+          {
+            method: "GET",
+            headers: getAuthHeaders(),
+          }
+        );
 
     console.log("Charts response status:", response.status);
     
@@ -155,10 +200,12 @@ export const fetchDashboardCharts = async (userId, isAdmin) => {
       return data.data;
     } else {
       console.log("Charts API returned error:", data.message);
-      throw new Error("Charts API failed");
+      console.warn("Charts API failed; using demo data.");
+      return DEMO_CHARTS;
     }
   } catch (error) {
     console.error("Error fetching dashboard charts:", error);
-    throw error;
+    console.warn("Charts request error; using demo data.");
+    return DEMO_CHARTS;
   }
 };

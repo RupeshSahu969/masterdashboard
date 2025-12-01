@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    NEXT_PUBLIC_VITE_API_URL:
-      process.env.NEXT_PUBLIC_VITE_API_URL ||
-      process.env.VITE_API_URL ||
-      'http://13.127.157.230:5050/api',
+    NEXT_PUBLIC_VITE_API_URL: process.env.NEXT_PUBLIC_VITE_API_URL || process.env.VITE_API_URL || '',
   },
   typescript: {
     ignoreBuildErrors: true,
