@@ -872,3 +872,72 @@ export const getChecklistDateRangeStatsApi = async (
     throw error;
   }
 };
+
+export const fetchTodayWorkingTasksApi = async (
+  dashboardType,
+  staffFilter = null,
+  departmentFilter = null,
+  page = 1,
+  limit = 50
+) => {
+  try {
+    console.log('Fetching today working tasks:', { dashboardType, staffFilter, departmentFilter, page, limit });
+
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    const role = localStorage.getItem('role');
+    const username = localStorage.getItem('user-name');
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+    let query = supabase
+      .from(dashboardType)
+      .select('*')
+      .order('task_start_date', { ascending: false })
+      .range(from, to)
+      .gte('task_start_date', `${today}T00:00:00`)
+      .lte('task_start_date', `${today}T23:59:59`);
+
+    // Role-based filter (regular users only see their tasks)
+    if (role === 'user' && username) {
+      query = query.eq('name', username);
+    }
+
+    // Department filter (only relevant for checklist)
+    if (departmentFilter && departmentFilter !== 'all' && dashboardType === 'checklist') {
+      query = query.eq('department', departmentFilter);
+    }
+
+    // Staff filter (admins can filter by staff)
+    if (staffFilter && staffFilter !== 'all' && role === 'admin') {
+      query = query.eq('name', staffFilter);
+    }
+
+    // Exclude completed tasks depending on table semantics
+    if (dashboardType === 'checklist') {
+      // For checklist: status 'Yes' means completed, so pick non-Yes (including null)
+      query = query.or('status.is.null,status.neq.Yes');
+    } else if (dashboardType === 'delegation') {
+      // For delegation: treat tasks with submission_date as completed or status 'done'
+      // We'll include only not-submitted and not-done tasks (working)
+      query = query.is('submission_date', null).neq('status', 'done');
+    } else {
+      // Generic fallback: try to exclude typical "completed" markers if present
+      // (no-op if fields don't exist in the table)
+      // e.g., if table uses 'status' with 'done' or 'completed'
+      // We leave it as-is to avoid runtime errors on unknown schemas.
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error fetching today working tasks:', error);
+      throw error;
+    }
+
+    console.log(`Fetched ${data?.length || 0} today working tasks for ${dashboardType}`);
+    return data || [];
+  } catch (error) {
+    console.error('Unexpected error in fetchTodayWorkingTasksApi:', error);
+    throw error;
+  }
+};

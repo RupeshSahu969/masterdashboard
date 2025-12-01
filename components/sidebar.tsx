@@ -12,17 +12,20 @@ interface SidebarItem {
 }
 
 const sidebarItems: SidebarItem[] = [
+  // Priority items first
   { id: 'checklist', label: 'Checklist & Delegation', icon: CheckSquare, gradient: 'gradient-purple' },
-  { id: 'planning', label: '12 Week Planning', icon: Calendar, gradient: 'gradient-orange' },
   { id: 'purchase', label: 'Store Purchase', icon: ShoppingCart, gradient: 'gradient-yellow' },
-  { id: 'enquiry', label: 'Enquiry Management', icon: FileText, gradient: 'gradient-teal' },
   { id: 'machine-maintenance', label: 'Machine Maintenance', icon: Wrench, gradient: 'gradient-purple' },
-  { id: 'maintenance', label: 'Vehicle Maintenance', icon: Wrench, gradient: 'gradient-pink' },
   { id: 'o2d', label: 'O2D System', icon: Package, gradient: 'gradient-purple' },
-  { id: 'documents', label: 'Documents', icon: FileStack, gradient: 'gradient-orange' },
-  { id: 'billet', label: 'Billet Production', icon: BarChart3, gradient: 'gradient-yellow' },
   { id: 'repair', label: 'Repair System', icon: Zap, gradient: 'gradient-teal' },
   { id: 'subscription', label: 'Subscriptions', icon: CreditCard, gradient: 'gradient-pink' },
+
+  // Remaining systems
+  { id: 'planning', label: '12 Week Planning', icon: Calendar, gradient: 'gradient-orange' },
+  { id: 'enquiry', label: 'Enquiry Management', icon: FileText, gradient: 'gradient-teal' },
+  { id: 'maintenance', label: 'Vehicle Maintenance', icon: Wrench, gradient: 'gradient-pink' },
+  { id: 'documents', label: 'Documents', icon: FileStack, gradient: 'gradient-orange' },
+  { id: 'billet', label: 'Billet Production', icon: BarChart3, gradient: 'gradient-yellow' },
   { id: 'travel', label: 'Travel Management', icon: Navigation, gradient: 'gradient-purple' },
 ]
 
